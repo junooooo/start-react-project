@@ -41,6 +41,7 @@ createApp(projectName);
 function createApp(name) {
     const root = path.resolve(name);
     const appName = path.basename(root);
+    const useYarn = shouldUseYarn();
 
     checkAppName(appName);
     validateDir(root, appName)
@@ -51,7 +52,10 @@ function createApp(name) {
             return saveProjectName(root, appName);
         })
         .then(function () {
-            return installDependencies(root);
+            return installDependencies(root, useYarn);
+        })
+        .then(function () {
+            showSuccessMessage(root, appName, useYarn);
         })
         .catch(function (err) {
             console.log(chalk.red('出错啦'));
@@ -120,10 +124,9 @@ function validateDir(dir, appName) {
     }
 }
 
-function installDependencies(root) {
+function installDependencies(root, useYarn) {
     process.chdir(root);
 
-    const useYarn = shouldUseYarn();
     let command;
     let args;
 
@@ -154,4 +157,22 @@ function saveProjectName(root, name) {
     packageJson.name = name;
 
     return fs.writeJson(filePath,packageJson, {spaces: 4});
+}
+
+function showSuccessMessage(root, appName, useYarn) {
+    const displayedCommand = useYarn ? 'yarn' : 'npm';
+
+    console.log();
+    console.log(`Success! Created ${appName} at ${root}`);
+    console.log('Inside that directory, you can run several commands:');
+    console.log();
+    console.log(chalk.cyan(`  ${displayedCommand} start`));
+    console.log('    Starts the development server.');
+    console.log();
+    console.log(
+        chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}build`)
+    );
+    console.log('    Bundles the app into static files for production.');
+
+    console.log('Happy hacking!');
 }
