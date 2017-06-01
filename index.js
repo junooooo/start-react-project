@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 'use strict';
-
+const readline = require('readline');
 const validateProjectName = require('validate-npm-package-name');
 const chalk = require('chalk');
 const commander = require('commander');
@@ -9,6 +9,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const execSync = require('child_process').execSync;
 const spawn = require('cross-spawn');
+const Promise = require('bluebird');
 
 const packageJson = require('./package.json');
 
@@ -42,7 +43,11 @@ function createApp(name) {
     const appName = path.basename(root);
 
     checkAppName(appName);
+    validateDir(root, appName)
+        .then(function () {
+            const useYarn = shouldUseYarn();
 
+        });
 }
 
 function checkAppName(appName) {
@@ -62,5 +67,46 @@ function printValidationResults(results) {
         results.forEach(error => {
             console.error(chalk.red(`  *  ${error}`));
         });
+    }
+}
+
+function shouldUseYarn() {
+    try {
+        execSync('yarnpkg --version', { stdio: 'ignore' });
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function validateDir(dir, appName) {
+    const isExist = fs.existsSync(dir);
+
+    if (!isExist) {
+        return fs.ensureDir(dir);
+    }
+
+    const stat = fs.statSync(dir);
+    if (stat.isDirectory()) {
+        return new Promise( (resolve) => {
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+
+            rl.question(`文件夹 ${appName} 已经存在，继续操作可能会导致对现有文件的覆盖，是否要继续 y/n ?`, (answer) => {
+                rl.close();
+                if (!answer || answer !== 'y') {
+                    process.exit(1);
+                } else {
+                    return resolve();
+                }
+            });
+        });
+    } else {
+        console.error(
+            `${chalk.red(`"${appName}"`)} 已经存在，请重新指定项目名称`
+        );
+        process.exit(1);
     }
 }
