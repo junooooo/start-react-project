@@ -1,13 +1,9 @@
 {
   "dependencies": {
     "react": "^15.5.4",
-    "react-dom": "^15.5.4",
-    "request": "^2.81.0"
+    "react-dom": "^15.5.4"
   },
-  "name": "test-react",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "version": "0.1.0",
   "devDependencies": {
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.24.1",

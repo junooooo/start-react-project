@@ -45,9 +45,41 @@ function createApp(name) {
     checkAppName(appName);
     validateDir(root, appName)
         .then(function () {
+            return fs.copy(path.resolve(__dirname, 'template'), root);
+        })
+        .then(function () {
+            process.chdir(root);
             const useYarn = shouldUseYarn();
+            let command;
+            let args;
 
-        });
+            if (useYarn) {
+                command = 'yarn';
+            } else {
+                command = 'npm';
+                args = ['install'];
+            }
+
+            return new Promise(function (resolve, reject) {
+                const child = spawn(command, args, { stdio: 'inherit' });
+                child.on('close', code => {
+                    if (code !== 0) {
+                        reject({
+                            command: `${command} ${args.join(' ')}`,
+                        });
+                        return;
+                    }
+                    resolve();
+                });
+            });
+        })
+        .then(function () {
+            console.log(chalk.cyan('依赖包安装好了！'));
+        })
+        .catch(function (err) {
+            console.log(chalk.red('出错啦'));
+            console.error(err);
+        })
 }
 
 function checkAppName(appName) {
