@@ -123,8 +123,7 @@ function validateDir(dir, appName) {
 function installDependencies(root) {
     process.chdir(root);
 
-    // const useYarn = shouldUseYarn();
-    const useYarn = false;
+    const useYarn = shouldUseYarn();
     let command;
     let args;
 
