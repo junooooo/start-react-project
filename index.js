@@ -34,3 +34,33 @@ if (typeof projectName === 'undefined') {
     console.log();
     process.exit(1);
 }
+
+createApp(projectName);
+
+function createApp(name) {
+    const root = path.resolve(name);
+    const appName = path.basename(root);
+
+    checkAppName(appName);
+
+}
+
+function checkAppName(appName) {
+    const validationResult = validateProjectName(appName);
+    if (!validationResult.validForNewPackages) {
+        console.error(
+            `Could not create a project called ${chalk.red(`"${appName}"`)} because of npm naming restrictions:`
+        );
+        printValidationResults(validationResult.errors);
+        printValidationResults(validationResult.warnings);
+        process.exit(1);
+    }
+}
+
+function printValidationResults(results) {
+    if (typeof results !== 'undefined') {
+        results.forEach(error => {
+            console.error(chalk.red(`  *  ${error}`));
+        });
+    }
+}
