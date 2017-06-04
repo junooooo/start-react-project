@@ -1,6 +1,6 @@
 {
-  "name": "start-react-project",
-  "version": "1.0.0",
+  "name": "start-react-app",
+  "version": "0.1.3",
   "main": "index.js",
   "repository": "git@github.com:junooooo/start-react-project.git",
   "author": "huijuannan <huijuannan.p@gmail.com>",

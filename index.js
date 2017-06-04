@@ -52,6 +52,9 @@ function createApp(name) {
             return saveProjectName(root, appName);
         })
         .then(function () {
+            console.log(chalk.cyan(`${appName} 项目目录已经成功创建`));
+            console.log(chalk.cyan('开始安装依赖包，可能需要几分钟……'));
+
             return installDependencies(root, useYarn);
         })
         .then(function () {
