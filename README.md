@@ -10,7 +10,7 @@ npm install -g start-react-app
 ## usage
 
 ```
-start-creat-app my-first-app
+start-react-app my-first-app
 ```
 
 - develop
