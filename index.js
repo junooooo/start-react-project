@@ -52,9 +52,13 @@ function createApp(name) {
             return saveProjectName(root, appName);
         })
         .then(function () {
+            process.chdir(root);
             console.log(chalk.cyan(`${appName} 项目目录已经成功创建`));
+            initGit();
+            console.log(chalk.cyan('git 已成功初始化.'));
+        })
+        .then(function () {
             console.log(chalk.cyan('开始安装依赖包，可能需要几分钟……'));
-
             return installDependencies(root, useYarn);
         })
         .then(function () {
@@ -95,6 +99,10 @@ function shouldUseYarn() {
     }
 }
 
+function initGit() {
+    execSync('git init');
+}
+
 function validateDir(dir, appName) {
     const isExist = fs.existsSync(dir);
 
@@ -127,9 +135,7 @@ function validateDir(dir, appName) {
     }
 }
 
-function installDependencies(root, useYarn) {
-    process.chdir(root);
-
+function installDependencies(useYarn) {
     let command;
     let args;
 
