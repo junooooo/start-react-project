@@ -48,10 +48,16 @@ function createApp(name) {
         .then(function () {
             process.chdir(root);
             initGit();
-            console.log(chalk.cyan('git 已成功初始化.'));
+            console.log(chalk.cyan('git 已成功初始化'));
         })
         .then(function () {
-            return fs.copy(path.resolve(__dirname, 'template'), root);
+            return fs.copy(path.resolve(__dirname, 'template'), root)
+                .then(function () {
+                    fs.renameSync(path.join(root, '.npmignore'), path.join(root, '.gitignore'));
+                });
+        })
+        .then(function () {
+
         })
         .then(function () {
             return saveProjectName(root, appName);
