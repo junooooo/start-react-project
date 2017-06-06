@@ -46,18 +46,18 @@ function createApp(name) {
     checkAppName(appName);
     validateDir(root, appName)
         .then(function () {
+            process.chdir(root);
+            initGit();
+            console.log(chalk.cyan('git 已成功初始化.'));
+        })
+        .then(function () {
             return fs.copy(path.resolve(__dirname, 'template'), root);
         })
         .then(function () {
             return saveProjectName(root, appName);
         })
         .then(function () {
-            process.chdir(root);
             console.log(chalk.cyan(`${appName} 项目目录已经成功创建`));
-            initGit();
-            console.log(chalk.cyan('git 已成功初始化.'));
-        })
-        .then(function () {
             console.log(chalk.cyan('开始安装依赖包，可能需要几分钟……'));
             return installDependencies(root, useYarn);
         })
